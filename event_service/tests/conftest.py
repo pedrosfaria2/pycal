@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.database import get_db, Base
@@ -9,23 +9,36 @@ from alembic import command
 import logging
 from io import StringIO
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:@localhost/"
+TEMP_DB_NAME = "test_db"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 @pytest.fixture(scope="function")
 def db_session():
+    with engine.connect() as connection:
+        connection.execute(text(f"DROP DATABASE IF EXISTS {TEMP_DB_NAME}"))
+        connection.execute(text(f"CREATE DATABASE {TEMP_DB_NAME}"))
+        connection.execute(text(f"USE {TEMP_DB_NAME}"))
+
+    test_engine = create_engine(f"mysql+pymysql://user:@localhost/{TEMP_DB_NAME}")
+    TestingSessionLocal.configure(bind=test_engine)
+    Base.metadata.create_all(bind=test_engine)
+
     alembic_cfg = Config("alembic.ini")
+    alembic_cfg.set_main_option("sqlalchemy.url", f"mysql+pymysql://user:@localhost/{TEMP_DB_NAME}")
     command.upgrade(alembic_cfg, "head")
 
-    Base.metadata.create_all(bind=engine)
     session = TestingSessionLocal()
     try:
         yield session
     finally:
         session.close()
-        Base.metadata.drop_all(bind=engine)
+        Base.metadata.drop_all(bind=test_engine)
+        with engine.connect() as connection:
+            connection.execute(text(f"DROP DATABASE IF EXISTS {TEMP_DB_NAME}"))
 
 
 @pytest.fixture(scope="function")

@@ -1,13 +1,13 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.types import TypeDecorator, TEXT
+from sqlalchemy.types import TypeDecorator, Text
 import json
 
 Base = declarative_base()
 
 
 class JsonType(TypeDecorator):
-    impl = TEXT
+    impl = Text
 
     @staticmethod
     def process_bind_param(value, dialect):

@@ -15,8 +15,8 @@ fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
 
+
 def run_migrations_offline():
-    """Executa as migrações no modo offline (sem uma conexão ao banco de dados)"""
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
@@ -28,8 +28,8 @@ def run_migrations_offline():
     with context.begin_transaction():
         context.run_migrations()
 
+
 def run_migrations_online():
-    """Executa as migrações no modo online (com uma conexão ao banco de dados)"""
     connectable = engine_from_config(
         config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",
@@ -44,6 +44,7 @@ def run_migrations_online():
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()
