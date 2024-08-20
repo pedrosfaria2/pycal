@@ -110,7 +110,7 @@ def test_create_event_with_invalid_datetime_format():
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
-"""def test_create_event_with_missing_start_time():
+def test_create_event_with_missing_start_time():
     response = client.post("/events/", json={
         "title": "Missing Start Time Event",
         "description": "This event has a missing start time.",
@@ -120,7 +120,8 @@ def test_create_event_with_invalid_datetime_format():
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     data = response.json()
-    assert data["start_time"] is not None"""
+    assert "start_time" in data["detail"][0]["loc"]
+
 
 def test_create_event_with_start_time_in_past():
     past_time = "2023-08-20T10:00:00"
