@@ -4,6 +4,7 @@ from app.main import app
 
 client = TestClient(app)
 
+
 def test_create_event_with_empty_title():
     response = client.post("/events/", json={
         "title": "",  # Título vazio
@@ -15,6 +16,7 @@ def test_create_event_with_empty_title():
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
+
 def test_create_event_with_invalid_dates():
     response = client.post("/events/", json={
         "title": "Invalid Dates Event",
@@ -25,6 +27,7 @@ def test_create_event_with_invalid_dates():
         "participants": ["Alice", "Bob"]
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
 
 def test_create_event_with_too_long_title():
     long_title = "A" * 101
@@ -38,6 +41,7 @@ def test_create_event_with_too_long_title():
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
+
 def test_create_event_with_too_long_description():
     long_description = "A" * 501
     response = client.post("/events/", json={
@@ -49,6 +53,7 @@ def test_create_event_with_too_long_description():
         "participants": ["Alice", "Bob"]
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
 
 def test_create_event_with_too_long_location():
     long_location = "A" * 201
@@ -62,6 +67,7 @@ def test_create_event_with_too_long_location():
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
+
 def test_create_event_with_invalid_participant():
     response = client.post("/events/", json={
         "title": "Event with invalid participant",
@@ -72,6 +78,7 @@ def test_create_event_with_invalid_participant():
         "participants": ["Alice", "", "Bob"]
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
 
 def test_create_event_with_no_participants():
     response = client.post("/events/", json={
@@ -86,6 +93,7 @@ def test_create_event_with_no_participants():
     data = response.json()
     assert data["participants"] == []
 
+
 def test_create_event_with_null_participants():
     response = client.post("/events/", json={
         "title": "Null Participants Event",
@@ -93,11 +101,12 @@ def test_create_event_with_null_participants():
         "start_time": "2024-08-20T10:00:00",
         "end_time": "2024-08-20T12:00:00",
         "location": "Test Location",
-        "participants": None 
+        "participants": None
     })
     assert response.status_code == status.HTTP_201_CREATED
     data = response.json()
     assert data["participants"] is None
+
 
 def test_create_event_with_invalid_datetime_format():
     response = client.post("/events/", json={
@@ -110,7 +119,8 @@ def test_create_event_with_invalid_datetime_format():
     })
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
-def test_create_event_with_missing_start_time():
+
+def test_create_event_with_missing_start_or_end_time():
     response = client.post("/events/", json={
         "title": "Missing Start Time Event",
         "description": "This event has a missing start time.",
@@ -121,6 +131,17 @@ def test_create_event_with_missing_start_time():
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     data = response.json()
     assert "start_time" in data["detail"][0]["loc"]
+
+    response = client.post("/events/", json={
+        "title": "Missing End Time Event",
+        "description": "This event has a missing end time.",
+        "start_time": "2024-08-20T10:00:00",
+        "location": "Test Location",
+        "participants": ["Alice", "Bob"]
+    })
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    data = response.json()
+    assert "end_time" in data["detail"][0]["loc"]
 
 
 def test_create_event_with_start_time_in_past():

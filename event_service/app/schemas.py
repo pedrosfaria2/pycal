@@ -5,11 +5,16 @@ from typing import List, Optional
 
 class EventBase(BaseModel):
     title: str = Field(..., min_length=3, max_length=100, description="The title of the event.")
-    description: Optional[str] = Field("Sample Event Description", max_length=500, description="A detailed description of the event.")
+    description: Optional[str] = Field("Sample Event Description", max_length=500, description="A detailed "
+                                                                                               "description of the "
+                                                                                               "event.")
     start_time: datetime = Field(..., description="The starting time of the event.")
-    end_time: Optional[datetime] = Field(None, description="The ending time of the event.")
-    location: Optional[str] = Field("Sample Location", max_length=200, description="The location where the event will be held.")
-    participants: Optional[List[str]] = Field(default=["Participant1", "Participant2"], description="A list of participants for the event.")
+    end_time: datetime = Field(..., description="The ending time of the event.")
+    location: Optional[str] = Field("Sample Location", max_length=200, description="The location where the event will "
+                                                                                   "be held.")
+    participants: Optional[List[str]] = Field(default=["Participant1", "Participant2"], description="A list of "
+                                                                                                    "participants for "
+                                                                                                    "the event.")
 
     model_config = ConfigDict(from_attributes=True)
 
