@@ -1,8 +1,22 @@
-from sqlalchemy import Column, Integer, String, DateTime, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.types import TypeDecorator, TEXT
+import json
 
 Base = declarative_base()
+
+class JsonType(TypeDecorator):
+    impl = TEXT
+
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            return json.dumps(value)
+        return None
+
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            return json.loads(value)
+        return None
 
 class Event(Base):
     __tablename__ = "events"
@@ -13,4 +27,4 @@ class Event(Base):
     start_time = Column(DateTime)
     end_time = Column(DateTime)
     location = Column(String)
-    participants = Column(String)
+    participants = Column(JsonType)

@@ -8,7 +8,7 @@ def get_events(db: Session, skip: int = 0, limit: int = 10):
     return db.query(models.Event).offset(skip).limit(limit).all()
 
 def create_event(db: Session, event: schemas.EventCreate):
-    db_event = models.Event(**event.dict())
+    db_event = models.Event(**event.model_dump())
     db.add(db_event)
     db.commit()
     db.refresh(db_event)
@@ -24,7 +24,7 @@ def delete_event(db: Session, event_id: int):
 def update_event(db: Session, event_id: int, event_data: schemas.EventCreate):
     db_event = get_event(db, event_id)
     if db_event:
-        for key, value in event_data.dict().items():
+        for key, value in event_data.model_dump().items():
             setattr(db_event, key, value)
         db.commit()
         db.refresh(db_event)

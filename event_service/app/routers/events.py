@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app import crud, models, schemas
 from app.database import get_db
 from typing import List
+from fastapi.responses import JSONResponse
 
 router = APIRouter(
     prefix="/events",
@@ -10,9 +11,10 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-@router.post("/", response_model=schemas.Event)
+@router.post("/", response_model=schemas.Event, status_code=status.HTTP_201_CREATED)
 def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
-    return crud.create_event(db=db, event=event)
+    new_event = crud.create_event(db=db, event=event)
+    return new_event
 
 @router.get("/", response_model=List[schemas.Event])
 def read_events(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
