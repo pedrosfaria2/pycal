@@ -28,7 +28,17 @@ jobs:
           pip install poetry
           poetry install
 
+      - name: Set up MySQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-server
+          sudo service mysql start
+          mysql -e "CREATE DATABASE IF NOT EXISTS test_db;"
+          mysql -e "CREATE USER 'user'@'localhost' IDENTIFIED BY '';"
+          mysql -e "GRANT ALL PRIVILEGES ON test_db.* TO 'user'@'localhost';"
+          mysql -e "FLUSH PRIVILEGES;"
+
       - name: Run tests
-        working-directory: ./event_service 
+        working-directory: ./event_service
         run: |
           poetry run pytest
