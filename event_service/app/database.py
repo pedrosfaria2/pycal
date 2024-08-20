@@ -19,6 +19,5 @@ def get_db():
     finally:
         db.close()
 
-# Importa os modelos para que sejam reconhecidos pelo Alembic
 from app import models  
 print("Modelos importados:", models.Event)
