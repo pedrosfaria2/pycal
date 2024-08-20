@@ -21,6 +21,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Change to event_service directory
+        working-directory: ./event_service
+        run: pwd
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
