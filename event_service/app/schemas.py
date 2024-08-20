@@ -18,7 +18,16 @@ class EventBase(BaseModel):
         if start_time and end_time < start_time:
             raise ValueError('end_time must be after start_time')
         return end_time
-
+    
+    @field_validator('participants')
+    def validate_participants(cls, participants):
+        if participants:
+            for participant in participants:
+                if not participant.strip():
+                    raise ValueError("Each participant must be a non-empty string.")
+        return participants
+    
+    
 class EventCreate(EventBase):
     pass
 
