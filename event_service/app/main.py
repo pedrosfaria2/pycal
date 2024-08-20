@@ -14,6 +14,7 @@ setup_logging()
 
 app.include_router(events.router)
 
+
 @app.middleware("http")
 async def log_exceptions(request: Request, call_next):
     try:
@@ -28,6 +29,7 @@ async def log_exceptions(request: Request, call_next):
             content={"detail": "Internal Server Error"},
         )
 
+
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     logging.error(f"HTTP Exception: {exc.detail}, Status Code: {exc.status_code}")
@@ -35,6 +37,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         status_code=exc.status_code,
         content={"detail": exc.detail},
     )
+
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):

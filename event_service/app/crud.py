@@ -4,6 +4,7 @@ from . import models, schemas
 
 logger = logging.getLogger(__name__)
 
+
 def get_event(db: Session, event_id: int):
     try:
         logger.debug(f"Fetching event with ID: {event_id}")
@@ -17,6 +18,7 @@ def get_event(db: Session, event_id: int):
         logger.error(f"Error fetching event with ID {event_id}: {e}", exc_info=True)
         raise
 
+
 def get_events(db: Session, skip: int = 0, limit: int = 10):
     try:
         logger.debug(f"Fetching events with skip: {skip}, limit: {limit}")
@@ -26,6 +28,7 @@ def get_events(db: Session, skip: int = 0, limit: int = 10):
     except Exception as e:
         logger.error(f"Error fetching events: {e}", exc_info=True)
         raise
+
 
 def create_event(db: Session, event: schemas.EventCreate):
     try:
@@ -39,6 +42,7 @@ def create_event(db: Session, event: schemas.EventCreate):
     except Exception as e:
         logger.error(f"Error creating event: {e}", exc_info=True)
         raise
+
 
 def delete_event(db: Session, event_id: int):
     try:
@@ -54,6 +58,7 @@ def delete_event(db: Session, event_id: int):
     except Exception as e:
         logger.error(f"Error deleting event with ID {event_id}: {e}", exc_info=True)
         raise
+
 
 def update_event(db: Session, event_id: int, event_data: schemas.EventCreate):
     try:

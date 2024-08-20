@@ -5,18 +5,22 @@ import json
 
 Base = declarative_base()
 
+
 class JsonType(TypeDecorator):
     impl = TEXT
 
-    def process_bind_param(self, value, dialect):
+    @staticmethod
+    def process_bind_param(value, dialect):
         if value is not None:
             return json.dumps(value)
         return None
 
-    def process_result_value(self, value, dialect):
+    @staticmethod
+    def process_result_value(value, dialect):
         if value is not None:
             return json.loads(value)
         return None
+
 
 class Event(Base):
     __tablename__ = "events"
