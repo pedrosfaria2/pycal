@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "event_service"
+version = "0.1.0"
+description = "API for managing calendar events"
+authors = ["pedrosfaria2 <pedroserrano2@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.112.1"
+sqlalchemy = "^2.0.32"
+pymysql = "^1.1.1"
+alembic = "^1.13.2"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+pytest-asyncio = "^0.23.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
