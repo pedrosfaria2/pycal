@@ -8,7 +8,11 @@ from typing import List
 router = APIRouter(
     prefix="/events",
     tags=["events"],
-    responses={404: {"description": "Not found"}},
+    responses={
+        404: {"description": "Not found"},
+        422: {"description": "Validation Error"},
+        500: {"description": "Internal Server Error"}
+    }
 )
 
 logger = logging.getLogger(__name__)
@@ -54,9 +58,10 @@ def update_event(event_id: int, event: schemas.EventCreate, db: Session = Depend
         if db_event is None:
             logger.warning(f"Event with ID {event_id} not found for update")
             raise HTTPException(status_code=404, detail="Event not found")
+        logger.info(f"Event updated with ID: {event_id}")
         return db_event
     except HTTPException as e:
-        logger.warning(f"Event not found for update: {e.detail}")
+        logger.warning(f"Error updating event: {e.detail}")
         raise
     except Exception as e:
         logger.error(f"Error updating event with ID {event_id}: {e}", exc_info=True)
@@ -65,13 +70,14 @@ def update_event(event_id: int, event: schemas.EventCreate, db: Session = Depend
 @router.delete("/{event_id}", response_model=schemas.Event)
 def delete_event(event_id: int, db: Session = Depends(get_db)):
     try:
-        deleted_event = crud.delete_event(db, event_id=event_id)
-        if deleted_event is None:
+        db_event = crud.delete_event(db, event_id=event_id)
+        if db_event is None:
             logger.warning(f"Event with ID {event_id} not found for deletion")
             raise HTTPException(status_code=404, detail="Event not found")
-        return deleted_event
+        logger.info(f"Event deleted with ID: {event_id}")
+        return db_event
     except HTTPException as e:
-        logger.warning(f"Event not found for deletion: {e.detail}")
+        logger.warning(f"Error deleting event: {e.detail}")
         raise
     except Exception as e:
         logger.error(f"Error deleting event with ID {event_id}: {e}", exc_info=True)
