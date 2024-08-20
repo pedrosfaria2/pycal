@@ -14,7 +14,7 @@ def get_event(db: Session, event_id: int):
             logger.warning(f"No event found with ID: {event_id}")
         return event
     except Exception as e:
-        logger.error(f"Error fetching event with ID {event_id}: {e}")
+        logger.error(f"Error fetching event with ID {event_id}: {e}", exc_info=True)
         raise
 
 def get_events(db: Session, skip: int = 0, limit: int = 10):
@@ -24,7 +24,7 @@ def get_events(db: Session, skip: int = 0, limit: int = 10):
         logger.info(f"Fetched {len(events)} events")
         return events
     except Exception as e:
-        logger.error(f"Error fetching events: {e}")
+        logger.error(f"Error fetching events: {e}", exc_info=True)
         raise
 
 def create_event(db: Session, event: schemas.EventCreate):
@@ -37,7 +37,7 @@ def create_event(db: Session, event: schemas.EventCreate):
         logger.info(f"Event created with ID: {db_event.id}")
         return db_event
     except Exception as e:
-        logger.error(f"Error creating event: {e}")
+        logger.error(f"Error creating event: {e}", exc_info=True)
         raise
 
 def delete_event(db: Session, event_id: int):
@@ -52,7 +52,7 @@ def delete_event(db: Session, event_id: int):
             logger.warning(f"No event found to delete with ID: {event_id}")
         return db_event
     except Exception as e:
-        logger.error(f"Error deleting event with ID {event_id}: {e}")
+        logger.error(f"Error deleting event with ID {event_id}: {e}", exc_info=True)
         raise
 
 def update_event(db: Session, event_id: int, event_data: schemas.EventCreate):
@@ -69,5 +69,5 @@ def update_event(db: Session, event_id: int, event_data: schemas.EventCreate):
             logger.warning(f"No event found to update with ID: {event_id}")
         return db_event
     except Exception as e:
-        logger.error(f"Error updating event with ID {event_id}: {e}")
+        logger.error(f"Error updating event with ID {event_id}: {e}", exc_info=True)
         raise

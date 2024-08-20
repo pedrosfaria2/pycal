@@ -20,7 +20,7 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
         logger.info(f"Event created with ID: {new_event.id}")
         return new_event
     except Exception as e:
-        logger.error(f"Error creating event: {e}")
+        logger.error(f"Error creating event: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail="Error creating event")
 
 @router.get("/", response_model=List[schemas.Event])
@@ -29,7 +29,7 @@ def read_events(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
         events = crud.get_events(db, skip=skip, limit=limit)
         return events
     except Exception as e:
-        logger.error(f"Error fetching events: {e}")
+        logger.error(f"Error fetching events: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Error fetching events")
 
 @router.get("/{event_id}", response_model=schemas.Event)
@@ -37,13 +37,14 @@ def read_event(event_id: int, db: Session = Depends(get_db)):
     try:
         db_event = crud.get_event(db, event_id=event_id)
         if db_event is None:
+            logger.warning(f"Event with ID {event_id} not found")
             raise HTTPException(status_code=404, detail="Event not found")
         return db_event
     except HTTPException as e:
         logger.warning(f"Event not found: {e.detail}")
         raise
     except Exception as e:
-        logger.error(f"Error fetching event with ID {event_id}: {e}")
+        logger.error(f"Error fetching event with ID {event_id}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Error fetching event")
 
 @router.put("/{event_id}", response_model=schemas.Event)
@@ -51,25 +52,27 @@ def update_event(event_id: int, event: schemas.EventCreate, db: Session = Depend
     try:
         db_event = crud.update_event(db, event_id=event_id, event_data=event)
         if db_event is None:
+            logger.warning(f"Event with ID {event_id} not found for update")
             raise HTTPException(status_code=404, detail="Event not found")
         return db_event
     except HTTPException as e:
-        logger.warning(f"Event not found: {e.detail}")
+        logger.warning(f"Event not found for update: {e.detail}")
         raise
     except Exception as e:
-        logger.error(f"Error updating event with ID {event_id}: {e}")
+        logger.error(f"Error updating event with ID {event_id}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Error updating event")
 
 @router.delete("/{event_id}", response_model=schemas.Event)
 def delete_event(event_id: int, db: Session = Depends(get_db)):
     try:
-        db_event = crud.delete_event(db, event_id=event_id)
-        if db_event is None:
+        deleted_event = crud.delete_event(db, event_id=event_id)
+        if deleted_event is None:
+            logger.warning(f"Event with ID {event_id} not found for deletion")
             raise HTTPException(status_code=404, detail="Event not found")
-        return db_event
+        return deleted_event
     except HTTPException as e:
-        logger.warning(f"Event not found: {e.detail}")
+        logger.warning(f"Event not found for deletion: {e.detail}")
         raise
     except Exception as e:
-        logger.error(f"Error deleting event with ID {event_id}: {e}")
+        logger.error(f"Error deleting event with ID {event_id}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Error deleting event")
