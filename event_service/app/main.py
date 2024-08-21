@@ -4,6 +4,7 @@ from app.middleware.log_exceptions import log_exceptions
 from app.routers import events
 from app.exceptions.handlers import http_exception_handler, general_exception_handler
 from app.config import settings
+from app.middleware.throttling import apply_throttling
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -12,6 +13,8 @@ app = FastAPI(
 )
 
 setup_logging()
+
+apply_throttling(app)
 
 app.include_router(events.router)
 

@@ -16,6 +16,15 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
+@pytest.fixture(scope="function", autouse=True)
+def disable_throttling():
+    app.user_middleware = [
+        middleware for middleware in app.user_middleware
+        if middleware.cls.__name__ != 'SlowAPIMiddleware'
+    ]
+    yield
+
+
 @pytest.fixture(scope="function")
 def db_session():
     with engine.connect() as connection:
