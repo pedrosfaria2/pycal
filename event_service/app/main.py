@@ -19,3 +19,11 @@ app.middleware("http")(log_exceptions)
 
 app.exception_handler(HTTPException)(http_exception_handler)
 app.exception_handler(Exception)(general_exception_handler)
+
+@app.get("/", summary="Root Endpoint", tags=["Root"])
+def read_root():
+    return {
+        "message": "Welcome to the Event Management API!",
+        "docs_url": "Go to /docs for the Swagger documentation.",
+        "redoc_url": "Go to /redoc for the ReDoc documentation."
+    }
