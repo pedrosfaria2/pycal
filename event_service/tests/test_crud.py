@@ -8,7 +8,7 @@ from app.schemas import EventCreate
 def sample_event():
     return EventCreate(
         title="Sample Event",
-        description="This is a sample event.",
+        description="This is a sample event",
         start_time="2024-08-20T10:00:00",
         end_time="2024-08-20T12:00:00",
         location="Sample Location",
@@ -26,10 +26,6 @@ def test_get_events(db_session: Session, sample_event: EventCreate):
     create.create_event(db_session, sample_event)
     events = get.get_events(db_session)
     assert len(events) > 0
-
-    # for event in events:
-    #     print(f"Event Title in DB: {event.title}")
-
     assert events[0].title == sample_event.title
 
 
@@ -66,3 +62,59 @@ def test_delete_event(db_session: Session, sample_event: EventCreate):
     deleted_event = delete.delete_event(db_session, event_id)
     assert deleted_event is not None
     assert get.get_event(db_session, event_id) is None
+
+
+def test_get_events_by_title(db_session: Session, sample_event: EventCreate):
+    create.create_event(db_session, sample_event)
+    events = get.get_events_by_title(db_session, title="Sample Event")
+    assert len(events) > 0
+    assert events[0].title == "Sample Event"
+
+
+def test_get_events_by_title_exact(db_session: Session, sample_event: EventCreate):
+    create.create_event(db_session, sample_event)
+    events = get.get_events_by_title(db_session, title="Sample Event", exact=True)
+    assert len(events) > 0
+    assert events[0].title == "Sample Event"
+
+
+def test_get_events_by_participant(db_session: Session, sample_event: EventCreate):
+    create.create_event(db_session, sample_event)
+    events = get.get_events_by_participant(db_session, participant="Alice")
+    assert len(events) > 0
+    assert "Alice" in events[0].participants
+
+
+def test_get_events_by_participant_exact(db_session: Session, sample_event: EventCreate):
+    create.create_event(db_session, sample_event)
+    events = get.get_events_by_participant(db_session, participant="Alice", exact=True)
+    assert len(events) > 0
+    assert "Alice" in events[0].participants
+
+
+def test_get_events_by_description(db_session: Session, sample_event: EventCreate):
+    create.create_event(db_session, sample_event)
+    events = get.get_events_by_description(db_session, description="sample event")
+    assert len(events) > 0
+    assert events[0].description == "This is a sample event"
+
+
+def test_get_events_by_description_exact(db_session: Session, sample_event: EventCreate):
+    create.create_event(db_session, sample_event)
+    events = get.get_events_by_description(db_session, description="This is a sample event", exact=True)
+    assert len(events) > 0
+    assert events[0].description == "This is a sample event"
+
+
+def test_get_events_by_location(db_session: Session, sample_event: EventCreate):
+    create.create_event(db_session, sample_event)
+    events = get.get_events_by_location(db_session, location="Sample Location")
+    assert len(events) > 0
+    assert events[0].location == "Sample Location"
+
+
+def test_get_events_by_location_exact(db_session: Session, sample_event: EventCreate):
+    create.create_event(db_session, sample_event)
+    events = get.get_events_by_location(db_session, location="Sample Location", exact=True)
+    assert len(events) > 0
+    assert events[0].location == "Sample Location"

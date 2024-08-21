@@ -2,6 +2,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 import logging
 
+
 async def log_exceptions(request: Request, call_next):
     try:
         response = await call_next(request)

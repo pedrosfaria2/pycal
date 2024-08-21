@@ -1,8 +1,10 @@
 from sqlalchemy.types import TypeDecorator, Text
 import json
 
+
 class JsonType(TypeDecorator):
     impl = Text
+    cache_ok = True
 
     @staticmethod
     def process_bind_param(value, dialect):

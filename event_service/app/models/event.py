@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from .base import Base
 from .json_type import JsonType
 
+
 class Event(Base):
     __tablename__ = "events"
 

@@ -155,3 +155,93 @@ def delete_event(event_id: int, db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f"Error deleting event with ID {event_id}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Error deleting event")
+
+
+@router.get(
+    "/search/",
+    response_model=List[Event],
+    summary="Search events by title",
+    description="Search for events by title. The search can be exact or partial (default) and is case-insensitive.",
+    response_description="A list of events that match the search criteria."
+)
+def search_events(title: str, exact: bool = False, db: Session = Depends(get_db)):
+    """
+    Search for events by title.
+
+    - **title**: The title to search for.
+    - **exact**: Set to `True` for an exact match search, otherwise a partial match search will be performed.
+    """
+    try:
+        events = get.get_events_by_title(db=db, title=title, exact=exact)
+        return events
+    except Exception as e:
+        logger.error(f"Error searching events by title '{title}': {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error searching events")
+
+
+@router.get(
+    "/search/participant/",
+    response_model=List[Event],
+    summary="Search events by participant",
+    description="Search for events by participant. The search can be exact or partial (default) and is "
+                "case-insensitive.",
+    response_description="A list of events that match the search criteria."
+)
+def search_events_by_participant(participant: str, exact: bool = False, db: Session = Depends(get_db)):
+    """
+    Search for events by participant.
+
+    - **participant**: The participant name to search for (case-insensitive). - **exact**: Set to `True` for an exact
+    match search, otherwise a partial match search will be performed. The search is case-insensitive.
+    """
+    try:
+        events = get.get_events_by_participant(db=db, participant=participant, exact=exact)
+        return events
+    except Exception as e:
+        logger.error(f"Error searching events by participant '{participant}': {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error searching events by participant")
+
+
+@router.get(
+    "/search/description/",
+    response_model=List[Event],
+    summary="Search events by description",
+    description="Search for events by description. The search can be exact or partial (default) and is "
+                "case-insensitive.",
+    response_description="A list of events that match the search criteria."
+)
+def search_events_by_description(description: str, exact: bool = False, db: Session = Depends(get_db)):
+    """
+    Search for events by description.
+
+    - **description**: The description to search for (case-insensitive). - **exact**: Set to `True` for an exact
+    match search, otherwise a partial match search will be performed. The search is case-insensitive.
+    """
+    try:
+        events = get.get_events_by_description(db=db, description=description, exact=exact)
+        return events
+    except Exception as e:
+        logger.error(f"Error searching events by description '{description}': {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error searching events by description")
+
+
+@router.get(
+    "/search/location/",
+    response_model=List[Event],
+    summary="Search events by location",
+    description="Search for events by location. The search can be exact or partial (default) and is case-insensitive.",
+    response_description="A list of events that match the search criteria."
+)
+def search_events_by_location(location: str, exact: bool = False, db: Session = Depends(get_db)):
+    """
+    Search for events by location.
+
+    - **location**: The location to search for (case-insensitive). - **exact**: Set to `True` for an exact match
+    search, otherwise a partial match search will be performed. The search is case-insensitive.
+    """
+    try:
+        events = get.get_events_by_location(db=db, location=location, exact=exact)
+        return events
+    except Exception as e:
+        logger.error(f"Error searching events by location '{location}': {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error searching events by location")

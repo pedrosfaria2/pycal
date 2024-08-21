@@ -12,9 +12,6 @@ def create_database_if_not_exists():
         connection.execute(text("CREATE DATABASE IF NOT EXISTS `dbname`"))
 
 
-#        print("Banco de dados criado com sucesso ou já existe.")
-
-
 create_database_if_not_exists()
 
 engine = create_engine(DATABASE_URL)
