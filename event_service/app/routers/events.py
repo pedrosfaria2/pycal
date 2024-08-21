@@ -1,7 +1,8 @@
 import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app import crud, schemas
+from app.crud import create, get, update, delete
+from app import schemas
 from app.database import get_db
 from typing import List
 
@@ -12,6 +13,7 @@ router = APIRouter(
         404: {"description": "Not found"},
         422: {"description": "Validation Error"},
         500: {"description": "Internal Server Error"}
+
     }
 )
 
@@ -41,7 +43,7 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
     - **participants**: List of participants in the event.
     """
     try:
-        new_event = crud.create_event(db=db, event=event)
+        new_event = create.create_event(db=db, event=event)
         logger.info(f"Event created with ID: {new_event.id}")
         return new_event
     except Exception as e:
@@ -64,7 +66,7 @@ def read_events(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     - **limit**: Maximum number of events to return.
     """
     try:
-        events = crud.get_events(db, skip=skip, limit=limit)
+        events = get.get_events(db, skip=skip, limit=limit)
         return events
     except Exception as e:
         logger.error(f"Error fetching events: {e}", exc_info=True)
@@ -85,7 +87,7 @@ def read_event(event_id: int, db: Session = Depends(get_db)):
     - **event_id**: The ID of the event to retrieve.
     """
     try:
-        db_event = crud.get_event(db, event_id=event_id)
+        db_event = get.get_event(db, event_id=event_id)
         if db_event is None:
             logger.warning(f"Event with ID {event_id} not found")
             raise HTTPException(status_code=404, detail="Event not found")
@@ -113,7 +115,7 @@ def update_event(event_id: int, event: schemas.EventCreate, db: Session = Depend
     - **event**: The updated event data.
     """
     try:
-        db_event = crud.update_event(db, event_id=event_id, event_data=event)
+        db_event = update.update_event(db, event_id=event_id, event_data=event)
         if db_event is None:
             logger.warning(f"Event with ID {event_id} not found for update")
             raise HTTPException(status_code=404, detail="Event not found")
@@ -141,7 +143,7 @@ def delete_event(event_id: int, db: Session = Depends(get_db)):
     - **event_id**: The ID of the event to delete.
     """
     try:
-        db_event = crud.delete_event(db, event_id=event_id)
+        db_event = delete.delete_event(db, event_id=event_id)
         if db_event is None:
             logger.warning(f"Event with ID {event_id} not found for deletion")
             raise HTTPException(status_code=404, detail="Event not found")

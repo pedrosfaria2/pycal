@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy.orm import Session
-from app import crud, schemas
+from app.crud import create, get, update, delete
+from app import schemas
 
 
 @pytest.fixture
@@ -16,32 +17,32 @@ def sample_event():
 
 
 def test_create_event(db_session: Session, sample_event: schemas.EventCreate):
-    created_event = crud.create_event(db_session, sample_event)
+    created_event = create.create_event(db_session, sample_event)
     assert created_event.title == sample_event.title
     assert created_event.description == sample_event.description
 
 
 def test_get_events(db_session: Session, sample_event: schemas.EventCreate):
-    crud.create_event(db_session, sample_event)
-    events = crud.get_events(db_session)
+    create.create_event(db_session, sample_event)
+    events = get.get_events(db_session)
     assert len(events) > 0
 
-#    for event in events:
-#    print(f"Event Title in DB: {event.title}")
+    # for event in events:
+    #     print(f"Event Title in DB: {event.title}")
 
     assert events[0].title == sample_event.title
 
 
 def test_get_event(db_session: Session, sample_event: schemas.EventCreate):
-    created_event = crud.create_event(db_session, sample_event)
+    created_event = create.create_event(db_session, sample_event)
     event_id = created_event.id
-    event = crud.get_event(db_session, event_id)
+    event = get.get_event(db_session, event_id)
     assert event is not None
     assert event.title == sample_event.title
 
 
 def test_update_event(db_session: Session, sample_event: schemas.EventCreate):
-    created_event = crud.create_event(db_session, sample_event)
+    created_event = create.create_event(db_session, sample_event)
     event_id = created_event.id
 
     updated_data = schemas.EventCreate(
@@ -53,15 +54,15 @@ def test_update_event(db_session: Session, sample_event: schemas.EventCreate):
         participants=["Charlie", "Dave"]
     )
 
-    updated_event = crud.update_event(db_session, event_id, updated_data)
+    updated_event = update.update_event(db_session, event_id, updated_data)
     assert updated_event.title == updated_data.title
     assert updated_event.description == updated_data.description
 
 
 def test_delete_event(db_session: Session, sample_event: schemas.EventCreate):
-    created_event = crud.create_event(db_session, sample_event)
+    created_event = create.create_event(db_session, sample_event)
     event_id = created_event.id
 
-    deleted_event = crud.delete_event(db_session, event_id)
+    deleted_event = delete.delete_event(db_session, event_id)
     assert deleted_event is not None
-    assert crud.get_event(db_session, event_id) is None
+    assert get.get_event(db_session, event_id) is None
