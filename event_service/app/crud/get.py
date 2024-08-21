@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy.orm import Session
-from .. import models
+from app.models import Event
 
 logger = logging.getLogger(__name__)
 
@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 def get_event(db: Session, event_id: int):
     try:
         logger.debug(f"Fetching event with ID: {event_id}")
-        event = db.query(models.Event).filter(models.Event.id == event_id).first()
+        event = db.query(Event).filter(Event.id == event_id).first()
         if event:
             logger.info(f"Event found: {event.title}")
         else:
@@ -22,7 +22,7 @@ def get_event(db: Session, event_id: int):
 def get_events(db: Session, skip: int = 0, limit: int = 10):
     try:
         logger.debug(f"Fetching events with skip: {skip}, limit: {limit}")
-        events = db.query(models.Event).offset(skip).limit(limit).all()
+        events = db.query(Event).offset(skip).limit(limit).all()
         logger.info(f"Fetched {len(events)} events")
         return events
     except Exception as e:
