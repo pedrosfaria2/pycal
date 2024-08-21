@@ -9,7 +9,7 @@ from alembic import command
 import logging
 from io import StringIO
 
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:@localhost/"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:password@localhost/"
 TEMP_DB_NAME = "test_db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -23,12 +23,12 @@ def db_session():
         connection.execute(text(f"CREATE DATABASE {TEMP_DB_NAME}"))
         connection.execute(text(f"USE {TEMP_DB_NAME}"))
 
-    test_engine = create_engine(f"mysql+pymysql://user:@localhost/{TEMP_DB_NAME}")
+    test_engine = create_engine(f"mysql+pymysql://user:password@localhost/{TEMP_DB_NAME}")
     TestingSessionLocal.configure(bind=test_engine)
     Base.metadata.create_all(bind=test_engine)
 
     alembic_cfg = Config("alembic.ini")
-    alembic_cfg.set_main_option("sqlalchemy.url", f"mysql+pymysql://user:@localhost/{TEMP_DB_NAME}")
+    alembic_cfg.set_main_option("sqlalchemy.url", f"mysql+pymysql://user:password@localhost/{TEMP_DB_NAME}")
     command.upgrade(alembic_cfg, "head")
 
     session = TestingSessionLocal()

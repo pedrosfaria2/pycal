@@ -1,9 +1,8 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-BASE_DATABASE_URL = "mysql+pymysql://user:@localhost"
-
-DATABASE_URL = "mysql+pymysql://user:@localhost/dbname"
+DATABASE_URL = "mysql+pymysql://user:password@localhost/dbname"
+BASE_DATABASE_URL = "mysql+pymysql://user:password@localhost"
 
 
 def create_database_if_not_exists():
@@ -11,6 +10,8 @@ def create_database_if_not_exists():
 
     with temp_engine.connect() as connection:
         connection.execute(text("CREATE DATABASE IF NOT EXISTS `dbname`"))
+
+
 #        print("Banco de dados criado com sucesso ou já existe.")
 
 

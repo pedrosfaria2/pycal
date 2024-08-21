@@ -16,6 +16,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Start services using Docker Compose
+        run: |
+          docker-compose up -d
+
+      - name: Wait for MySQL to be ready
+        run: |
+          until docker-compose exec -T mysql_container mysqladmin ping -h"127.0.0.1" --silent; do
+            echo 'Waiting for MySQL to be ready...';
+            sleep 5;
+          done
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -28,17 +44,18 @@ jobs:
           pip install poetry
           poetry install
 
-      - name: Set up MySQL
+      - name: Run migrations
+        working-directory: ./event_service
         run: |
-          sudo apt-get update
-          sudo apt-get install -y mysql-server
-          sudo service mysql start
-          mysql -e "CREATE DATABASE IF NOT EXISTS test_db;"
-          mysql -e "CREATE USER 'user'@'localhost' IDENTIFIED BY '';"
-          mysql -e "GRANT ALL PRIVILEGES ON test_db.* TO 'user'@'localhost';"
-          mysql -e "FLUSH PRIVILEGES;"
+          poetry run alembic upgrade head
 
       - name: Run tests
         working-directory: ./event_service
+        env:
+          DATABASE_URL: mysql+pymysql://user:@127.0.0.1/test_db
         run: |
           poetry run pytest
+
+      - name: Shut down services
+        run: |
+          docker-compose down
