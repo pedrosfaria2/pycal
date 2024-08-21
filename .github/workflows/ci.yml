@@ -26,13 +26,6 @@ jobs:
         run: |
           docker-compose up -d
 
-      - name: Wait for MySQL to be ready
-        run: |
-          until docker-compose exec -T mysql_container mysqladmin ping -h"127.0.0.1" --silent; do
-            echo 'Waiting for MySQL to be ready...';
-            sleep 5;
-          done
-
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
