@@ -1,12 +1,12 @@
 import pytest
 from sqlalchemy.orm import Session
 from app.crud import create, get, update, delete
-from app import schemas
+from app.schemas import EventCreate
 
 
 @pytest.fixture
 def sample_event():
-    return schemas.EventCreate(
+    return EventCreate(
         title="Sample Event",
         description="This is a sample event.",
         start_time="2024-08-20T10:00:00",
@@ -16,13 +16,13 @@ def sample_event():
     )
 
 
-def test_create_event(db_session: Session, sample_event: schemas.EventCreate):
+def test_create_event(db_session: Session, sample_event: EventCreate):
     created_event = create.create_event(db_session, sample_event)
     assert created_event.title == sample_event.title
     assert created_event.description == sample_event.description
 
 
-def test_get_events(db_session: Session, sample_event: schemas.EventCreate):
+def test_get_events(db_session: Session, sample_event: EventCreate):
     create.create_event(db_session, sample_event)
     events = get.get_events(db_session)
     assert len(events) > 0
@@ -33,7 +33,7 @@ def test_get_events(db_session: Session, sample_event: schemas.EventCreate):
     assert events[0].title == sample_event.title
 
 
-def test_get_event(db_session: Session, sample_event: schemas.EventCreate):
+def test_get_event(db_session: Session, sample_event: EventCreate):
     created_event = create.create_event(db_session, sample_event)
     event_id = created_event.id
     event = get.get_event(db_session, event_id)
@@ -41,11 +41,11 @@ def test_get_event(db_session: Session, sample_event: schemas.EventCreate):
     assert event.title == sample_event.title
 
 
-def test_update_event(db_session: Session, sample_event: schemas.EventCreate):
+def test_update_event(db_session: Session, sample_event: EventCreate):
     created_event = create.create_event(db_session, sample_event)
     event_id = created_event.id
 
-    updated_data = schemas.EventCreate(
+    updated_data = EventCreate(
         title="Updated Event",
         description="This is an updated event.",
         start_time="2024-08-20T11:00:00",
@@ -59,7 +59,7 @@ def test_update_event(db_session: Session, sample_event: schemas.EventCreate):
     assert updated_event.description == updated_data.description
 
 
-def test_delete_event(db_session: Session, sample_event: schemas.EventCreate):
+def test_delete_event(db_session: Session, sample_event: EventCreate):
     created_event = create.create_event(db_session, sample_event)
     event_id = created_event.id
 

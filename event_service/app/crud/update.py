@@ -1,12 +1,12 @@
 import logging
 from sqlalchemy.orm import Session
-from .. import schemas
 from .get import get_event
+from app.schemas import EventCreate
 
 logger = logging.getLogger(__name__)
 
 
-def update_event(db: Session, event_id: int, event_data: schemas.EventCreate):
+def update_event(db: Session, event_id: int, event_data: EventCreate):
     try:
         logger.debug(f"Updating event with ID: {event_id}")
         db_event = get_event(db, event_id)

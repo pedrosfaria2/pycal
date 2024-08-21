@@ -1,11 +1,12 @@
 import logging
 from sqlalchemy.orm import Session
-from .. import models, schemas
+from .. import models
+from app.schemas import EventCreate
 
 logger = logging.getLogger(__name__)
 
 
-def create_event(db: Session, event: schemas.EventCreate):
+def create_event(db: Session, event: EventCreate):
     try:
         logger.debug(f"Creating event: {event.title}")
         db_event = models.Event(**event.model_dump())

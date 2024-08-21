@@ -2,9 +2,9 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.crud import create, get, update, delete
-from app import schemas
 from app.database import get_db
 from typing import List
+from app.schemas import EventCreate, Event
 
 router = APIRouter(
     prefix="/events",
@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 
 @router.post(
     "/",
-    response_model=schemas.Event,
+    response_model=Event,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new event",
     description="Creates a new event with the specified details.",
     response_description="The details of the created event."
 )
-def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
+def create_event(event: EventCreate, db: Session = Depends(get_db)):
     """
     Create a new event with the specified details.
 
@@ -53,7 +53,7 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
 
 @router.get(
     "/",
-    response_model=List[schemas.Event],
+    response_model=List[Event],
     summary="List all events",
     description="Retrieves a list of all events. You can use query parameters to limit and skip results.",
     response_description="A list of events."
@@ -75,7 +75,7 @@ def read_events(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 
 @router.get(
     "/{event_id}",
-    response_model=schemas.Event,
+    response_model=Event,
     summary="Get an event by ID",
     description="Retrieve details of an event by its ID.",
     response_description="The details of the event."
@@ -102,12 +102,12 @@ def read_event(event_id: int, db: Session = Depends(get_db)):
 
 @router.put(
     "/{event_id}",
-    response_model=schemas.Event,
+    response_model=Event,
     summary="Update an event",
     description="Update the details of an event by its ID.",
     response_description="The updated event details."
 )
-def update_event(event_id: int, event: schemas.EventCreate, db: Session = Depends(get_db)):
+def update_event(event_id: int, event: EventCreate, db: Session = Depends(get_db)):
     """
     Update an existing event.
 
@@ -131,7 +131,7 @@ def update_event(event_id: int, event: schemas.EventCreate, db: Session = Depend
 
 @router.delete(
     "/{event_id}",
-    response_model=schemas.Event,
+    response_model=Event,
     summary="Delete an event",
     description="Delete an event by its ID.",
     response_description="The details of the deleted event."

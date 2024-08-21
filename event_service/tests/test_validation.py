@@ -7,7 +7,7 @@ client = TestClient(app)
 
 def test_create_event_with_empty_title():
     response = client.post("/events/", json={
-        "title": "",  # Título vazio
+        "title": "",
         "description": "Event with empty title",
         "start_time": "2024-08-20T10:00:00",
         "end_time": "2024-08-20T12:00:00",
