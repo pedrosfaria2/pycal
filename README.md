@@ -33,7 +33,8 @@ Esta API foi desenvolvida como parte de um desafio técnico para a criação de 
   - **`test_crud.py`**: Testa as operações de CRUD diretamente, utilizando a camada de banco de dados.
   - **`test_events.py`**: Teste as rotas da API.
   - **`test_validation.py`**: Foca na validação de dados, testando cenários de erro e garantindo que dados inválidos sejam rejeitados.
-  - **`test_throttling.py`**: Testa o throttle imposto na API. 
+  - **`test_throttling.py`**: Testa o throttle imposto na API.
+  - **`test_health_check.py`**: Testa o endpoint de saúde criado. 
   
 ### Escolhas Técnicas:
 
@@ -110,8 +111,7 @@ Esta API foi desenvolvida como parte de um desafio técnico para a criação de 
 
 ## Testes
 
-O projeto inclui uma série de testes unitários, de integração e de validação, que garantem a correta funcionalidade das operações CRUD (Create, Read, Update, Delete) e a integridade dos dados processados pela API. Este conjunto de testes também testa o throttle da API. Os testes foram implementados utilizando o framework pytest, e cobrem tanto o comportamento das rotas quanto a lógica interna do CRUD. Para rodar os testes localmente digite:
-
+O projeto inclui uma série de testes unitários, de integração e de validação, que garantem a correta funcionalidade das operações CRUD (Create, Read, Update, Delete) e a integridade dos dados processados pela API. Esses testes também cobrem o controle de throttling e a verificação do endpoint de saúde, assegurando que a API lida corretamente com limites de requisição e a conexão ao banco de dados. Os testes foram implementados utilizando o framework pytest e cobrem tanto o comportamento das rotas quanto a lógica interna do CRUD. Para rodar os testes localmente, utilize:
 ```bash
 poetry run pytest
 ```
@@ -125,3 +125,5 @@ Este projeto foi desenvolvido com o objetivo de cobrir todos os requisitos obrig
 A escolha das tecnologias foi baseada em sua eficiência e compatibilidade com o cenário proposto. Docker foi utilizado para garantir um ambiente de banco de dados consistente, enquanto Poetry foi escolhido para o gerenciamento de dependências, assegurando um ambiente de desenvolvimento controlado e fácil de replicar.
 
 Embora a segurança não tenha sido o foco principal nesta versão do projeto, ela foi identificada como uma área de melhoria para futuras iterações. O projeto está preparado para expansões, incluindo a adição de mecanismos de autenticação e autorização, que podem ser incorporados conforme a evolução das necessidades da aplicação.
+
+Adicionalmente, embora ferramentas de monitoramento não tenham sido integradas diretamente ao projeto, foi exposto um endpoint de verificação de saúde (`/health`) que permite a fácil integração com sistemas de monitoramento externos. Esse endpoint verifica a conectividade com o banco de dados e o estado geral da aplicação.
