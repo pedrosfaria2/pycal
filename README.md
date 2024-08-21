@@ -22,6 +22,7 @@ Esta API foi desenvolvida como parte de um desafio técnico para a criação de 
   - **`database.py`**: Configuração do banco de dados e gerenciamento de sessões.
   - **`exceptions/`**: Handlers para exceções personalizadas e tratamento de erros.
   - **`logging_config.py`**: Configuração do sistema de logging.
+  - **`middleware/`**: Contém middlewares para tratamento de exceções e controle de throttling.
   - **`models/`**: Definição dos modelos do banco de dados.
   - **`routers/`**: Definição das rotas da API.
   - **`schemas/`**: Definição dos schemas Pydantic para validação de dados.
@@ -32,6 +33,7 @@ Esta API foi desenvolvida como parte de um desafio técnico para a criação de 
   - **`test_crud.py`**: Testa as operações de CRUD diretamente, utilizando a camada de banco de dados.
   - **`test_events.py`**: Teste as rotas da API.
   - **`test_validation.py`**: Foca na validação de dados, testando cenários de erro e garantindo que dados inválidos sejam rejeitados.
+  - **`test_throttling.py`**: Testa o throttle imposto na API. 
   
 ### Escolhas Técnicas:
 
@@ -108,7 +110,7 @@ Esta API foi desenvolvida como parte de um desafio técnico para a criação de 
 
 ## Testes
 
-O projeto inclui uma série de testes unitários, de integração e de validação, que garantem a correta funcionalidade das operações CRUD (Create, Read, Update, Delete) e a integridade dos dados processados pela API. Os testes foram implementados utilizando o framework pytest, e cobrem tanto o comportamento das rotas quanto a lógica interna do CRUD. Para rodar os testes localmente digite:
+O projeto inclui uma série de testes unitários, de integração e de validação, que garantem a correta funcionalidade das operações CRUD (Create, Read, Update, Delete) e a integridade dos dados processados pela API. Este conjunto de testes também testa o throttle da API. Os testes foram implementados utilizando o framework pytest, e cobrem tanto o comportamento das rotas quanto a lógica interna do CRUD. Para rodar os testes localmente digite:
 
 ```bash
 poetry run pytest
@@ -118,7 +120,7 @@ Isso garantirá que todas as funcionalidades estão cobertas e funcionando como 
 
 ## Considerações Finais
 
-Este projeto foi desenvolvido com o objetivo de cobrir todos os requisitos obrigatórios do desafio, incluindo a utilização de um framework web moderno (FastAPI), validação de dados (Pydantic), manipulação de banco de dados com ORM (SQLAlchemy), e testes automatizados. Além disso, a maior parte dos requisitos opcionais foi implementada, especialmente aqueles que impactam diretamente as funcionalidades da API e demonstram boas práticas de desenvolvimento, como a integração contínua (CI/CD) e a cobertura de testes.
+Este projeto foi desenvolvido com o objetivo de cobrir todos os requisitos obrigatórios do desafio, incluindo a utilização de um framework web moderno (FastAPI), validação de dados (Pydantic), manipulação de banco de dados com ORM (SQLAlchemy), testes automatizados e controle de throttling para gerenciar o tráfego da API e evitar abusos. Além disso, a maior parte dos requisitos opcionais foi implementada, especialmente aqueles que impactam diretamente as funcionalidades da API e demonstram boas práticas de desenvolvimento, como a integração contínua (CI/CD) e a cobertura de testes.
 
 A escolha das tecnologias foi baseada em sua eficiência e compatibilidade com o cenário proposto. Docker foi utilizado para garantir um ambiente de banco de dados consistente, enquanto Poetry foi escolhido para o gerenciamento de dependências, assegurando um ambiente de desenvolvimento controlado e fácil de replicar.
 
